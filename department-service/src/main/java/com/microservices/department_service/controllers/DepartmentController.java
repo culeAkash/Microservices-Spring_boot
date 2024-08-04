@@ -1,5 +1,6 @@
 package com.microservices.department_service.controllers;
 
+import com.microservices.department_service.exceptions.ResourceNotFoundException;
 import com.microservices.department_service.payloads.DepartmentDTO;
 import com.microservices.department_service.services.DepartmentService;
 import lombok.AllArgsConstructor;
@@ -26,11 +27,8 @@ public class DepartmentController {
     }
 
     @GetMapping("/{departmentCode}")
-    public ResponseEntity<DepartmentDTO> getDepartment(@PathVariable String departmentCode) {
+    public ResponseEntity<DepartmentDTO> getDepartment(@PathVariable String departmentCode){
         DepartmentDTO departmentDTO = departmentService.getDepartmentByCode(departmentCode);
-        if (departmentDTO == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
         return new ResponseEntity<>(departmentDTO,HttpStatus.OK);
     }
 
