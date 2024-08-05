@@ -1,6 +1,6 @@
 package com.microservices.employee_service.payloads;
 
-import jakarta.persistence.Column;
+//import jakarta.persistence.Column;
 import lombok.*;
 
 
@@ -15,5 +15,6 @@ public class EmployeeDTO {
     private String employeePhone;
     private String employeeEmail;
     private String employeePassword;
+    private String departmentCode;
 
 }

@@ -1,4 +1,4 @@
-package com.microservices.employee_service.Entities;
+package com.microservices.employee_service.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -16,4 +16,7 @@ public class Employee {
     @Column(nullable = false,unique = true)
     private String employeeEmail;
     private String employeePassword;
+
+
+    private String departmentCode;
 }

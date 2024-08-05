@@ -1,6 +1,6 @@
 package com.microservices.employee_service.utils;
 
-import com.microservices.employee_service.Entities.Employee;
+import com.microservices.employee_service.entities.Employee;
 import com.microservices.employee_service.payloads.EmployeeDTO;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;

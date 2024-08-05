@@ -1,11 +1,14 @@
 package com.microservices.employee_service.controllers;
 
+import com.microservices.employee_service.payloads.ApiResponseDTO;
 import com.microservices.employee_service.payloads.EmployeeDTO;
 import com.microservices.employee_service.services.EmployeeService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/employees")
@@ -25,12 +28,15 @@ public class EmployeeController {
 
 
     @GetMapping("/getEmployee/{employeeId}")
-    public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable  Long employeeId) {
-         EmployeeDTO employeeDTO = employeeService.getEmployeeById(employeeId);
+    public ResponseEntity<ApiResponseDTO> getEmployeeById(@PathVariable  Long employeeId) {
+         ApiResponseDTO apiResponseDTO = employeeService.getEmployeeById(employeeId);
+         return new ResponseEntity<>(apiResponseDTO, HttpStatus.OK);
+    }
 
-         if (employeeDTO == null) {
-             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-         }
-         return new ResponseEntity<>(employeeDTO, HttpStatus.OK);
+
+    @GetMapping("/getEmployees")
+    public ResponseEntity<List<ApiResponseDTO>> getAllEmployees() {
+        List<ApiResponseDTO> apiResponseDTO = employeeService.getAllEmployees();
+        return new ResponseEntity<>(apiResponseDTO, HttpStatus.OK);
     }
 }
