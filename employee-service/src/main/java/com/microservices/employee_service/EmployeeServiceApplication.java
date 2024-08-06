@@ -10,12 +10,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 @SpringBootApplication
 public class EmployeeServiceApplication {
 
-	@Value("${api.base.url}")
-	private String BASE_URL;
-
 	@Bean
 	public WebClient getWebClient() {
-		return WebClient.builder().baseUrl(BASE_URL).build();
+		return WebClient.builder().build();
 	}
 
 //	@Bean

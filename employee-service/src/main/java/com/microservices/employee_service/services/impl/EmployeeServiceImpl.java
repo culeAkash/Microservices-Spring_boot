@@ -47,7 +47,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 //        ResponseEntity<DepartmentDTO> responseEntity =  restTemplate.getForEntity("http://localhost:8080/api/v1/departments/"+employee.getDepartmentCode(), DepartmentDTO.class);
         //Using Web client
         DepartmentDTO departmentDTO = webClient.get()
-                .uri("/departments/"+employee.getDepartmentCode())
+                .uri("http://localhost:8080/departments/"+employee.getDepartmentCode())
                 .retrieve()
                 .onStatus(httpStatus -> httpStatus.value() == 404
                         ,error-> Mono.error(new ResourceNotFoundException("Department","Department code",employee.getDepartmentCode())))
@@ -69,7 +69,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         List<ApiResponseDTO> apiResponseDTOS = new ArrayList<>();
         for(Employee employee : employees) {
              DepartmentDTO departmentDTO =  webClient.get()
-                    .uri("/departments/"+employee.getDepartmentCode())
+                    .uri("http://localhost:8080/departments/"+employee.getDepartmentCode())
                     .retrieve()
                      .onStatus(httpStatus -> httpStatus.value() == 404
                              ,error-> Mono.error(new ResourceNotFoundException("Department","Department code",employee.getDepartmentCode())))
