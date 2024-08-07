@@ -8,6 +8,7 @@ import com.microservices.department_service.services.DepartmentService;
 import com.microservices.department_service.utils.PayloadConverterUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -17,6 +18,9 @@ import java.util.Optional;
 public class DepartmentServiceImpl implements DepartmentService {
 
     private DepartmentRepository departmentRepository;
+
+    @Autowired
+    private Environment environment;
 
 
     @Override
@@ -32,6 +36,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public DepartmentDTO getDepartmentByCode(String departmentCode){
+        System.out.println(environment.getProperty("local.server.port"));
         Department department = departmentRepository.getByDepartmentCode(departmentCode).orElseThrow(()->new ResourceNotFoundException("Department","Department code",departmentCode));
 
         return PayloadConverterUtil.convertToDepartmentDTO(department);
