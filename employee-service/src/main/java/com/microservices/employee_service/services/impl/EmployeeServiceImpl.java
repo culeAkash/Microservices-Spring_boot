@@ -9,6 +9,8 @@ import com.microservices.employee_service.repositories.EmployeeRepository;
 import com.microservices.employee_service.services.APIClient;
 import com.microservices.employee_service.services.EmployeeService;
 import com.microservices.employee_service.utils.PayloadConverterUtil;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -45,6 +47,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @CircuitBreaker(name = "${spring.application.name}" , fallbackMethod = "getDefaultDepartment")
     public ApiResponseDTO getEmployeeById(long id) {
         Optional<Employee> employeeOptional = employeeRepository.findById(id);
 
@@ -93,5 +96,18 @@ public class EmployeeServiceImpl implements EmployeeService {
         return apiResponseDTOS;
     }
 
+    public ApiResponseDTO getDefaultDepartment(long employeeId,Exception exception){
+        Optional<Employee> employeeOptional = employeeRepository.findById(employeeId);
+        Employee employee = employeeOptional.orElseThrow(()->new ResourceNotFoundException("Employee","Employee id",employeeId));
+
+        DepartmentDTO departmentDTO = new DepartmentDTO();
+        departmentDTO.setDepartmentName("R&D department");
+        departmentDTO.setDepartmentCode("RD001");
+        departmentDTO.setDepartmentDescription("Research and Development Department");
+
+        EmployeeDTO employeeDTO = PayloadConverterUtil.convertToEmployeeDTO(employee);
+
+        return new ApiResponseDTO(employeeDTO,departmentDTO);
+    }
 
 }
