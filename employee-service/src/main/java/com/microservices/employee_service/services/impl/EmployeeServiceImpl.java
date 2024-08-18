@@ -5,20 +5,18 @@ import com.microservices.employee_service.exceptions.ResourceNotFoundException;
 import com.microservices.employee_service.payloads.ApiResponseDTO;
 import com.microservices.employee_service.payloads.DepartmentDTO;
 import com.microservices.employee_service.payloads.EmployeeDTO;
+import com.microservices.employee_service.payloads.OrganisationDTO;
 import com.microservices.employee_service.repositories.EmployeeRepository;
-import com.microservices.employee_service.services.APIClient;
+import com.microservices.employee_service.services.APIDepartmentClient;
+import com.microservices.employee_service.services.APIOrganisationClient;
 import com.microservices.employee_service.services.EmployeeService;
 import com.microservices.employee_service.utils.PayloadConverterUtil;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import io.github.resilience4j.retry.annotation.Retry;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 
 import java.util.ArrayList;
@@ -37,7 +35,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 //    private RestTemplate restTemplate;
 
     private WebClient webClient;
-    private APIClient apiClient;
+    private APIDepartmentClient apiDepartmentClient;
+    private APIOrganisationClient apiOrganisationClient;
 
     @Override
     public EmployeeDTO saveEmployee(EmployeeDTO employeeDTO) {
@@ -55,7 +54,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 //        ResponseEntity<DepartmentDTO> responseEntity =  restTemplate.getForEntity("http://localhost:8080/api/v1/departments/"+employee.getDepartmentCode(), DepartmentDTO.class);
         //Using Web client
-        DepartmentDTO departmentDTO = apiClient.getDepartment(employee.getDepartmentCode());
+        DepartmentDTO departmentDTO = apiDepartmentClient.getDepartment(employee.getDepartmentCode());
+        OrganisationDTO organisationDTO = apiOrganisationClient.getOrganisation(employee.getOrganisationCode());
 
 //                webClient.get()
 //                .uri("/departments/"+employee.getDepartmentCode())
@@ -70,7 +70,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         EmployeeDTO employeeDTO = PayloadConverterUtil.convertToEmployeeDTO(employee);
 
-        return new ApiResponseDTO(employeeDTO,departmentDTO);
+        return new ApiResponseDTO(employeeDTO,departmentDTO,organisationDTO);
     }
 
     @Override
@@ -80,7 +80,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         List<ApiResponseDTO> apiResponseDTOS = new ArrayList<>();
         for(Employee employee : employees) {
-             DepartmentDTO departmentDTO =  apiClient.getDepartment(employee.getDepartmentCode());
+             DepartmentDTO departmentDTO =  apiDepartmentClient.getDepartment(employee.getDepartmentCode());
+             OrganisationDTO organisationDTO = apiOrganisationClient.getOrganisation(employee.getOrganisationCode());
 //                     webClient.get()
 //                    .uri("/departments/"+employee.getDepartmentCode())
 //                    .retrieve()
@@ -90,7 +91,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 //                    .block();
 
              EmployeeDTO employeeDTO = PayloadConverterUtil.convertToEmployeeDTO(employee);
-            apiResponseDTOS.add(new ApiResponseDTO(employeeDTO,departmentDTO));
+            apiResponseDTOS.add(new ApiResponseDTO(employeeDTO,departmentDTO,organisationDTO));
         }
 
         return apiResponseDTOS;
@@ -107,7 +108,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         EmployeeDTO employeeDTO = PayloadConverterUtil.convertToEmployeeDTO(employee);
 
-        return new ApiResponseDTO(employeeDTO,departmentDTO);
+        return new ApiResponseDTO(employeeDTO,departmentDTO,null);
     }
 
 }

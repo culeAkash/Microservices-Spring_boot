@@ -1,16 +1,15 @@
 package com.microservices.employee_service.payloads;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class ApiResponseDTO {
     private EmployeeDTO employee;
     private DepartmentDTO department;
+    private OrganisationDTO organisation;
 }
